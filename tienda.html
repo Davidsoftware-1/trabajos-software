@@ -91,7 +91,7 @@
                 <h3>Jabón de Café Orgánico</h3>
                 <p>Exfoliante natural del Quindío</p>
                 <div class="precio">$25.000</div>
-                <button class="btn btn-agregar" onclick="agregar('Jabón de Café Orgánico',25000)">
+                <button class="btn btn-agregar-tienda" data-nombre="Jabón de Café Orgánico" data-precio="25000">
                     <i class="fas fa-cart-plus"></i> Agregar
                 </button>
             </div>
@@ -103,7 +103,7 @@
                 <h3>Crema de Aguacate</h3>
                 <p>Hidratación profunda</p>
                 <div class="precio">$45.000</div>
-                <button class="btn btn-agregar" onclick="agregar('Crema de Aguacate',45000)">
+                <button class="btn btn-agregar-tienda" data-nombre="Crema de Aguacate" data-precio="45000">
                     <i class="fas fa-cart-plus"></i> Agregar
                 </button>
             </div>
@@ -115,7 +115,7 @@
                 <h3>Aceite Esencial de Café</h3>
                 <p>Revitaliza tu piel</p>
                 <div class="precio">$38.000</div>
-                <button class="btn btn-agregar" onclick="agregar('Aceite Esencial de Café',38000)">
+                <button class="btn btn-agregar-tienda" data-nombre="Aceite Esencial de Café" data-precio="38000">
                     <i class="fas fa-cart-plus"></i> Agregar
                 </button>
             </div>
@@ -146,42 +146,50 @@
 
 
 <script>
-    let carrito = [];
-    let total = 0;
+(() => {
+    const carritoTienda = [];
+    const numeroWhatsapp = "573167894521";
 
-    function agregar(nombre, precio){
-        carrito.push({nombre, precio});
-        total += precio;
-        actualizar();
-    }
+    const lista = document.getElementById("listaCarrito");
+    const totalSpan = document.getElementById("total");
+    const badge = document.getElementById("badgeCarrito");
+    const btnWhatsapp = document.getElementById("btnWhatsapp");
 
-    function actualizar(){
-        const lista = document.getElementById("listaCarrito");
-        const totalSpan = document.getElementById("total");
-        const badge = document.getElementById("badgeCarrito");
+    const formato = new Intl.NumberFormat("es-CO");
 
+    function actualizarVista() {
+        const total = carritoTienda.reduce((acc, p) => acc + p.precio, 0);
         lista.innerHTML = "";
 
-        carrito.forEach(p=>{
+        carritoTienda.forEach((p) => {
             const li = document.createElement("li");
-            li.textContent = p.nombre + " - $" + p.precio;
+            li.textContent = `${p.nombre} - $${formato.format(p.precio)}`;
             lista.appendChild(li);
         });
 
-        totalSpan.textContent = total;
-        badge.textContent = carrito.length;
+        totalSpan.textContent = formato.format(total);
+        badge.textContent = carritoTienda.length;
 
-        let numero = "573167894521"; // TU NUMERO
+        const detalle = carritoTienda
+            .map((p) => `- ${p.nombre} $${formato.format(p.precio)}`)
+            .join("%0A");
 
-        let mensaje = "Hola Hidroplant, quiero comprar:%0A";
-        carrito.forEach(p=>{
-            mensaje += "- " + p.nombre + " $" + p.precio + "%0A";
-        });
-        mensaje += "%0ATotal: $" + total;
-
-        document.getElementById("btnWhatsapp").href =
-            "https://wa.me/" + numero + "?text=" + mensaje;
+        const mensaje = `Hola Hidroplant, quiero comprar:%0A${detalle}%0A%0ATotal: $${formato.format(total)}`;
+        btnWhatsapp.href = `https://wa.me/${numeroWhatsapp}?text=${mensaje}`;
     }
+
+    document.querySelectorAll(".btn-agregar-tienda").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            carritoTienda.push({
+                nombre: btn.dataset.nombre,
+                precio: Number(btn.dataset.precio)
+            });
+            actualizarVista();
+        });
+    });
+
+    actualizarVista();
+})();
 </script>
 
 <script src="js/main.js"></script>
