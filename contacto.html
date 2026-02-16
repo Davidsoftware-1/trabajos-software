@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contáctanos - Hidroplant. Cosméticos naturales en Armenia, Quindío. Estamos aquí para ayudarte.">
+    <title>📧 Contacto | Hidroplant</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+
+        body{
+            font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+            line-height:1.6;
+            color:#333;
+            background:#f5f7f6;
+        }
+
+        /* HEADER */
+        .header{
+            background:linear-gradient(135deg,#2d5016,#4a7c29);
+            color:white;
+            text-align:center;
+            padding:4rem 1rem;
+        }
+
+        .header h1{
+            font-size:2.8rem;
+            margin-bottom:1rem;
+        }
+
+        .header p{
+            font-size:1.2rem;
+            opacity:.95;
+        }
+
+        /* LAYOUT */
+        .container{
+            max-width:1200px;
+            margin:auto;
+            padding:2rem 1rem 3rem;
+        }
+
+        .grid{
+            display:grid;
+            grid-template-columns:1fr 1.2fr;
+            gap:2rem;
+        }
+
+        /* INFO */
+        .info{
+            background:white;
+            padding:2rem;
+            border-radius:15px;
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+            height:fit-content;
+        }
+
+        .info h2{
+            color:#2d5016;
+            margin-bottom:1.5rem;
+        }
+
+        .info-item{
+            margin-bottom:1.2rem;
+            padding:1rem;
+            background:#f8f9fa;
+            border-radius:10px;
+            border-left:4px solid #4a7c29;
+        }
+
+        .info-item i{
+            color:#4a7c29;
+            margin-right:.5rem;
+        }
+
+        .info a{
+            color:#4a7c29;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        /* REDES */
+        .redes{
+            margin-top:1.5rem;
+            display:flex;
+            gap:.8rem;
+        }
+
+        .redes a{
+            width:45px;height:45px;
+            display:flex;align-items:center;justify-content:center;
+            background:#4a7c29;color:white;
+            border-radius:50%;
+            transition:.3s;
+        }
+
+        .redes a:hover{transform:translateY(-4px);}
+
+        /* FORM */
+        .form{
+            background:white;
+            padding:2rem;
+            border-radius:15px;
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .form h2{
+            color:#2d5016;
+            margin-bottom:.5rem;
+        }
+
+        .sub{
+            color:#666;
+            margin-bottom:1.5rem;
+        }
+
+        .group{margin-bottom:1.2rem;}
+
+        label{
+            display:block;
+            margin-bottom:.5rem;
+            font-weight:600;
+            color:#2d5016;
+        }
+
+        input,select,textarea{
+            width:100%;
+            padding:.9rem;
+            border-radius:10px;
+            border:2px solid #e0e0e0;
+            font-size:1rem;
+            font-family:inherit;
+            transition:.3s;
+        }
+
+        input:focus,select:focus,textarea:focus{
+            outline:none;
+            border-color:#4a7c29;
+            box-shadow:0 0 0 3px rgba(74,124,41,.1);
+        }
+
+        textarea{min-height:140px;resize:vertical;}
+
+        .row{
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:1rem;
+        }
+
+        .check{
+            display:flex;
+            gap:.6rem;
+            margin:1rem 0;
+            font-size:.9rem;
+            color:#555;
+        }
+
+        .btn{
+            width:100%;
+            padding:1rem;
+            border:none;
+            border-radius:10px;
+            font-size:1.1rem;
+            font-weight:bold;
+            cursor:pointer;
+            background:linear-gradient(135deg,#4a7c29,#2d5016);
+            color:white;
+            transition:.3s;
+        }
+
+        .btn:hover{
+            transform:translateY(-3px);
+            box-shadow:0 10px 20px rgba(0,0,0,.15);
+        }
+
+        /* FAQ */
+        .faq{
+            margin-top:3rem;
+            background:white;
+            padding:2rem;
+            border-radius:15px;
+            box-shadow:0 10px 25px rgba(0,0,0,.08);
+        }
+
+        .faq h2{
+            text-align:center;
+            color:#2d5016;
+            margin-bottom:1.5rem;
+        }
+
+        .faq-item{
+            padding:1rem;
+            background:#f8f9fa;
+            border-radius:10px;
+            margin-bottom:1rem;
+            cursor:pointer;
+        }
+
+        .faq-item strong{color:#2d5016;}
+
+        .faq-respuesta{
+            margin-top:.7rem;
+            color:#666;
+            display:none;
+        }
+
+        /* FOOTER LINK */
+        .volver{
+            text-align:center;
+            margin:2rem 0;
+        }
+
+        .volver a{
+            color:#4a7c29;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width:900px){
+            .grid{grid-template-columns:1fr;}
+            .row{grid-template-columns:1fr;}
+            .header h1{font-size:2rem;}
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <section class="header">
+        <h1><i class="fas fa-paper-plane"></i> Contáctanos</h1>
+        <p>¿Tienes preguntas sobre nuestros productos naturales? Escríbenos 🌿</p>
+    </section>
+
+    <main class="container">
+
+        <div class="grid">
+
+            <!-- INFORMACIÓN -->
+            <aside class="info">
+                <h2>Información de contacto</h2>
+
+                <div class="info-item">
+                    <p><i class="fas fa-map-marker-alt"></i> Barrio Manantiales, Armenia, Quindío</p>
+                </div>
+
+                <div class="info-item">
+                    <p>
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:+573167894521">+57 316 789 4521</a>
+                    </p>
+                </div>
+
+                <div class="info-item">
+                    <p>
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:KatherynHurtado27@gmail.com">KatherynHurtado27@gmail.com</a>
+                    </p>
+                </div>
+
+                <div class="redes">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="https://wa.me/573167894521" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </aside>
+
+            <!-- FORMULARIO -->
+            <section class="form">
+                <h2>Envíanos un mensaje</h2>
+                <p class="sub">Te responderemos lo más pronto posible</p>
+
+                <form action="https://formsubmit.co/KatherynHurtado27@gmail.com" method="POST">
+
+                    <!-- configuración -->
+                    <input type="hidden" name="_subject" value="Nuevo mensaje desde Hidroplant 🌿">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+
+                    <div class="row">
+                        <div class="group">
+                            <label>Nombre *</label>
+                            <input type="text" name="nombre" required autocomplete="name">
+                        </div>
+
+                        <div class="group">
+                            <label>Teléfono *</label>
+                            <input type="tel" name="telefono" required autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <div class="group">
+                        <label>Correo electrónico *</label>
+                        <input type="email" name="email" required autocomplete="email">
+                    </div>
+
+                    <div class="group">
+                        <label>Asunto *</label>
+                        <select name="asunto" required>
+                            <option value="">Selecciona...</option>
+                            <option>Consulta sobre Productos</option>
+                            <option>Estado de mi Pedido</option>
+                            <option>Ventas al Por Mayor</option>
+                            <option>Devoluciones</option>
+                            <option>Sugerencias</option>
+                            <option>Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="group">
+                        <label>Mensaje *</label>
+                        <textarea name="mensaje" required></textarea>
+                    </div>
+
+                    <div class="check">
+                        <input type="checkbox" name="newsletter" value="Sí">
+                        <span>Quiero recibir promociones y novedades</span>
+                    </div>
+
+                    <div class="check">
+                        <input type="checkbox" required>
+                        <span>Acepto la política de privacidad *</span>
+                    </div>
+
+                    <button class="btn">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar mensaje
+                    </button>
+
+                </form>
+            </section>
+
+        </div>
+
+        <!-- FAQ -->
+        <section class="faq">
+            <h2>Preguntas frecuentes</h2>
+
+            <div class="faq-item">
+                <strong>¿Cuánto tarda la entrega?</strong>
+                <div class="faq-respuesta">
+                    Armenia: 1-2 días hábiles. Nacional: 3-5 días.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <strong>¿Los productos tienen garantía?</strong>
+                <div class="faq-respuesta">
+                    Sí, garantía de satisfacción de 15 días.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <strong>¿Son naturales?</strong>
+                <div class="faq-respuesta">
+                    Elaborados con ingredientes del Eje Cafetero, sin químicos dañinos.
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <div class="volver">
+        <a href="index.html"><i class="fas fa-arrow-left"></i> Volver al inicio</a>
+    </div>
+
+    <!-- FAQ script -->
+    <script>
+        document.querySelectorAll(".faq-item").forEach(item=>{
+            item.addEventListener("click",()=>{
+                const r=item.querySelector(".faq-respuesta");
+                r.style.display=r.style.display==="block"?"none":"block";
+            });
+        });
+    </script>
+
+</body>
+</html>
