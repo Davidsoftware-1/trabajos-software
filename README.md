@@ -35,20 +35,21 @@ a += 5;
 ● Asignación de resta (## -=## ):
 a -= 2;
 (Equivale a
-a = a - 2
-## )
+a = a - 
+2## )
 ● Asignación de multiplicación (## *=## ):
 a *= 3;
 (Equivale a
 a = a * 3
-## )
+##)
+
 C. Operadores de Comparación
 Se utilizan para comparar dos valores y devuelven un valor booleano (
 true
 o
-false
-## ).
-## ● Igualdad (## ==): Compara solo el valor (hace conversión de tipo).
+false## ).
+## ● Igualdad 
+(## ==): Compara solo el valor (hace conversión de tipo).
 ● Igualdad estricta (## ===): Compara valor y tipo de dato (Recomendado).
 ● Desigualdad estricta (## !==): Verifica que los valores y tipos no sean iguales.
 ● Mayor que (## >) y Menor que (## <## ).
