@@ -37,9 +37,7 @@ a -= 2;
 (Equivale a
 a = a - 2
 ## )
-● Asignación de multiplicación (
-## *=
-## ):
+● Asignación de multiplicación (## *=## ):
 a *= 3;
 (Equivale a
 a = a * 3
@@ -50,15 +48,9 @@ true
 o
 false
 ## ).
-## ● Igualdad (
-## ==
-): Compara solo el valor (hace conversión de tipo).
-● Igualdad estricta (
-## ===
-): Compara valor y tipo de dato (Recomendado).
-● Desigualdad estricta (
-## !==
-): Verifica que los valores y tipos no sean iguales.
+## ● Igualdad (## ==): Compara solo el valor (hace conversión de tipo).
+● Igualdad estricta (## ===): Compara valor y tipo de dato (Recomendado).
+● Desigualdad estricta (## !==): Verifica que los valores y tipos no sean iguales.
 ● Mayor que (## >) y Menor que (## <## ).
 ● Mayor o igual que (## >=) y Menor o igual que (## <=## ).
 - Operador Ternario (Condicional)
