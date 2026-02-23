@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Interactivo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --accent: #f0c040;
+    --text: #f0ede8;
+    --muted: #888;
+    --correct: #4caf7d;
+    --wrong: #e05a2b;
+    --border: #2a2a2a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -40%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(240,192,64,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .quiz-wrapper { width: 100%; max-width: 680px; }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+  }
+  .logo span { color: var(--accent); }
+  .score-display { text-align: right; }
+  .score-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .score-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .score-max { font-size: 1rem; color: var(--muted); }
+  .progress-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .pip-row { display: flex; gap: 6px; margin-bottom: 32px; }
+  .pip {
+    flex: 1;
+    height: 4px;
+    border-radius: 99px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .pip.done { background: var(--accent); }
+  .pip.active { background: var(--muted); }
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 24px;
+    animation: cardIn 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .question-number {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+  .options-grid { display: grid; gap: 12px; margin-bottom: 24px; }
+  .option-btn {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 24px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    animation: cardIn 0.4s cubic-bezier(.4,0,.2,1) both;
+  }
+  .option-btn:nth-child(1) { animation-delay: 0.05s; }
+  .option-btn:nth-child(2) { animation-delay: 0.1s; }
+  .option-btn:nth-child(3) { animation-delay: 0.15s; }
+  .option-btn:nth-child(4) { animation-delay: 0.2s; }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(240,192,64,0.07);
+    transform: translateX(4px);
+  }
+  .option-letter {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .option-btn:hover:not(:disabled) .option-letter {
+    background: var(--accent);
+    color: #000;
+  }
+  .option-btn.correct { border-color: var(--correct); background: rgba(76,175,125,0.1); }
+  .option-btn.correct .option-letter { background: var(--correct); color: #fff; }
+  .option-btn.wrong { border-color: var(--wrong); background: rgba(224,90,43,0.1); }
+  .option-btn.wrong .option-letter { background: var(--wrong); color: #fff; }
+  .option-btn:disabled { cursor: default; }
+  .feedback {
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    border-left: 3px solid;
+    display: none;
+    animation: cardIn 0.3s ease;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { border-color: var(--correct); }
+  .feedback.wrong-fb { border-color: var(--wrong); }
+  .feedback-title {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .correct-fb .feedback-title { color: var(--correct); }
+  .wrong-fb .feedback-title { color: var(--wrong); }
+  .next-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    display: none;
+  }
+  .next-btn.show { display: block; animation: cardIn 0.3s ease; }
+  .next-btn:hover {
+    background: #f7d060;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(240,192,64,0.25);
+  }
+  .result-screen { text-align: center; display: none; animation: cardIn 0.5s ease; }
+  .result-screen.show { display: block; }
+  .result-emoji { font-size: 5rem; margin-bottom: 24px; display: block; }
+  .result-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+  .result-sub { color: var(--muted); font-size: 1rem; margin-bottom: 36px; }
+  .final-score-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 60px;
+    margin-bottom: 28px;
+    display: inline-block;
+  }
+  .final-score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .final-score-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .restart-btn {
+    padding: 16px 48px;
+    background: transparent;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .restart-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+</style>
+</head>
+<body>
+<div class="quiz-wrapper">
+  <div class="header">
+    <div class="logo">Quiz<span>·</span>ES</div>
+    <div class="score-display">
+      <div class="score-label">Puntuación</div>
+      <div class="score-value" id="scoreValue">0<span class="score-max"> / 5</span></div>
+    </div>
+  </div>
+
+  <div id="quizSection">
+    <div class="pip-row" id="pipRow"></div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="question-card" id="questionCard">
+      <div class="question-number" id="questionNumber">Pregunta 1 de 5</div>
+      <div class="question-text" id="questionText"></div>
+    </div>
+    <div class="options-grid" id="optionsGrid"></div>
+    <div class="feedback" id="feedback">
+      <div class="feedback-title" id="feedbackTitle"></div>
+      <div id="feedbackText"></div>
+    </div>
+    <button class="next-btn" id="nextBtn">Siguiente pregunta →</button>
+  </div>
+
+  <div class="result-screen" id="resultScreen">
+    <span class="result-emoji" id="resultEmoji"></span>
+    <div class="result-title" id="resultTitle"></div>
+    <div class="result-sub" id="resultSub"></div>
+    <div class="final-score-box">
+      <div class="final-score-num" id="finalScore"></div>
+      <div class="final-score-label">de 5 puntos</div>
+    </div>
+    <br><br>
+    <button class="restart-btn" onclick="restartQuiz()">↩ Jugar de nuevo</button>
+  </div>
+</div>
+
+<script>
+const preguntas = [
+  {
+    pregunta: "¿Cuál es el río más largo del mundo?",
+    opciones: ["Río Amazonas", "Río Nilo", "Río Yangtsé", "Río Misisipi"],
+    correcta: 1,
+    explicacion: "El Río Nilo, con aproximadamente 6,650 km, es considerado el río más largo del mundo, aunque hay debate con el Amazonas."
+  },
+  {
+    pregunta: "¿En qué año llegó el hombre a la Luna por primera vez?",
+    opciones: ["1965", "1967", "1969", "1971"],
+    correcta: 2,
+    explicacion: "El 20 de julio de 1969, Neil Armstrong y Buzz Aldrin aterrizaron en la Luna durante la misión Apollo 11."
+  },
+  {
+    pregunta: "¿Cuántos huesos tiene el cuerpo humano adulto?",
+    opciones: ["186", "206", "226", "246"],
+    correcta: 1,
+    explicacion: "El cuerpo humano adulto tiene 206 huesos. Los bebés nacen con más (~270) que se van fusionando con el tiempo."
+  },
+  {
+    pregunta: "¿Cuál es el país más grande del mundo por superficie?",
+    opciones: ["China", "Canadá", "Estados Unidos", "Rusia"],
+    correcta: 3,
+    explicacion: "Rusia es el país más grande del mundo con aproximadamente 17.1 millones de km², casi el doble que el segundo lugar."
+  },
+  {
+    pregunta: "¿Qué planeta del sistema solar tiene más lunas conocidas?",
+    opciones: ["Júpiter", "Saturno", "Urano", "Neptuno"],
+    correcta: 1,
+    explicacion: "Saturno tiene actualmente el mayor número de lunas confirmadas (más de 140), superando recientemente a Júpiter."
+  }
+];
+
+const letras = ['A','B','C','D'];
+let preguntaActual = 0;
+let puntuacion = 0;
+let respondido = false;
+
+function iniciarQuiz() {
+  preguntaActual = 0;
+  puntuacion = 0;
+  respondido = false;
+  actualizarPuntuacion();
+  crearPips();
+  mostrarPregunta();
+}
+
+function crearPips() {
+  const row = document.getElementById('pipRow');
+  row.innerHTML = '';
+  preguntas.forEach((_, i) => {
+    const pip = document.createElement('div');
+    pip.classList.add('pip');
+    pip.id = `pip-${i}`;
+    row.appendChild(pip);
+  });
+  actualizarPips();
+}
+
+function actualizarPips() {
+  preguntas.forEach((_, i) => {
+    const pip = document.getElementById(`pip-${i}`);
+    pip.className = 'pip';
+    if (i < preguntaActual) pip.classList.add('done');
+    else if (i === preguntaActual) pip.classList.add('active');
+  });
+}
+
+function mostrarPregunta() {
+  const p = preguntas[preguntaActual];
+  respondido = false;
+
+  document.getElementById('questionNumber').textContent = `Pregunta ${preguntaActual + 1} de ${preguntas.length}`;
+  document.getElementById('questionText').textContent = p.pregunta;
+  document.getElementById('progressFill').style.width = `${(preguntaActual / preguntas.length) * 100}%`;
+
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  p.opciones.forEach((op, i) => {
+    const btn = document.createElement('button');
+    btn.classList.add('option-btn');
+    btn.innerHTML = `<span class="option-letter">${letras[i]}</span>${op}`;
+    btn.onclick = () => seleccionarRespuesta(i);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').className = 'next-btn';
+
+  const card = document.getElementById('questionCard');
+  card.style.animation = 'none';
+  card.offsetHeight;
+  card.style.animation = '';
+}
+
+function seleccionarRespuesta(indice) {
+  if (respondido) return;
+  respondido = true;
+
+  const p = preguntas[preguntaActual];
+  const botones = document.querySelectorAll('.option-btn');
+  const esCorrecta = indice === p.correcta;
+
+  if (esCorrecta) puntuacion++;
+  actualizarPuntuacion();
+
+  botones.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === p.correcta) btn.classList.add('correct');
+    if (i === indice && !esCorrecta) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('feedback');
+  if (esCorrecta) {
+    fb.className = 'feedback correct-fb show';
+    document.getElementById('feedbackTitle').textContent = '✓ ¡Correcto!';
+    document.getElementById('feedbackText').textContent = p.explicacion;
+  } else {
+    fb.className = 'feedback wrong-fb show';
+    document.getElementById('feedbackTitle').textContent = '✗ Incorrecto';
+    document.getElementById('feedbackText').innerHTML = `La respuesta correcta era: <strong>${p.opciones[p.correcta]}</strong>. ${p.explicacion}`;
+  }
+
+  const next = document.getElementById('nextBtn');
+  next.className = 'next-btn show';
+  next.textContent = preguntaActual === preguntas.length - 1 ? 'Ver resultados ✓' : 'Siguiente pregunta →';
+
+  actualizarPips();
+}
+
+function actualizarPuntuacion() {
+  document.getElementById('scoreValue').innerHTML = `${puntuacion}<span class="score-max"> / 5</span>`;
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => {
+  preguntaActual++;
+  if (preguntaActual >= preguntas.length) {
+    mostrarResultados();
+  } else {
+    mostrarPregunta();
+    actualizarPips();
+  }
+});
+
+function mostrarResultados() {
+  document.getElementById('quizSection').style.display = 'none';
+  document.getElementById('resultScreen').className = 'result-screen show';
+  document.getElementById('finalScore').textContent = puntuacion;
+
+  let emoji, titulo, sub;
+  if (puntuacion === 5) { emoji = '🏆'; titulo = '¡Perfecto!'; sub = 'Respondiste todo correctamente. ¡Increíble!'; }
+  else if (puntuacion >= 4) { emoji = '🌟'; titulo = '¡Excelente!'; sub = 'Casi perfecto, muy buen trabajo.'; }
+  else if (puntuacion >= 3) { emoji = '👍'; titulo = '¡Bien hecho!'; sub = 'Buen resultado, sigue practicando.'; }
+  else if (puntuacion >= 2) { emoji = '📚'; titulo = 'Puedes mejorar'; sub = 'Vale la pena repasar los temas.'; }
+  else { emoji = '💪'; titulo = '¡A estudiar!'; sub = 'No te rindas, inténtalo de nuevo.'; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultTitle').textContent = titulo;
+  document.getElementById('resultSub').textContent = sub;
+}
+
+function restartQuiz() {
+  document.getElementById('resultScreen').className = 'result-screen';
+  document.getElementById('quizSection').style.display = 'block';
+  iniciarQuiz();
+}
+
+iniciarQuiz();
+</script>
+</body>
+</html>
